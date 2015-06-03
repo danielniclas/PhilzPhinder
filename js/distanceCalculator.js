@@ -21,7 +21,8 @@ function calculateDistance(lat1, lon1, lat2, lon2){
         Math.cos(latRads1) * Math.cos(latRads2) *
         Math.sin(lonDeltaRads/2) * Math.sin(lonDeltaRads/2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return (R * c).toFixed(1);
+
+    return (R * c).toFixed(2);          // calculate to the 100
 }
 
 function toRadians(value) {

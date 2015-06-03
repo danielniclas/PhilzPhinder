@@ -7,6 +7,7 @@ var geocoder;
 var map;
 var infowindow = new google.maps.InfoWindow();
 var marker;
+var infoBoxText;
 
 
 
@@ -29,8 +30,7 @@ function initialize () {
 
 
 
-
-function initializeX(userLatitude, userLongitude) {
+function initializeX(userLatitude, userLongitude) {                         //  USER LOCATION
 
     geocoder = new google.maps.Geocoder();
 
@@ -47,114 +47,78 @@ function initializeX(userLatitude, userLongitude) {
         mapTypeId: 'roadmap'
     };
 
-    console.log("In Initialize");
 
-    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    myMap = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+
+    var marker = new google.maps.Marker({                               //  MAP MARKER
+        position: latlng,
+        map: myMap,
+        title: 'You are Here'
+    });
+
+    infowindow.setContent("You!");
+    infowindow.open(myMap, marker);
+
 }
 
 
 
-
-function mappit(event) {
+function mappit(event) {                                            //  MAPPIT FUNCTION for finding sites - OnCLICK EVENT
 
     console.log("Event: ", event);
-    console.log("Event id: ", event.target.id);
-
-    var target = event.target.id;
-
-    switch (target) {
-        case "paseo":
-
-            console.log("ID:", target);
-            var x = paseo.latitude;
-            var y = paseo.longitude;
-            codeLatLng(x, y);
-            break;
-
-        case "cupertino":
-
-            console.log("ID:", target);
-            var x = cupertino.latitude;
-            var y = cupertino.longitude;
-            codeLatLng(x, y);
-            break;
-
-        case "gatos":
-
-            console.log("ID:", target);
-            var x = gatos.latitude;
-            var y = gatos.longitude;
-            codeLatLng(x, y);
-            break;
-
-        case "alto":
-
-            console.log("ID:", target);
-            var x = alto.latitude;
-            var y = alto.longitude;
-            codeLatLng(x, y);
-            break;
+    //console.log("Event id: ", event.target.id);
+    console.log("Event id: ", event.path[1].id);
 
 
-        case "stanford":
-
-            console.log("ID:", target);
-            var x = stanford.latitude;
-            var y = stanford.longitude;
-            codeLatLng(x, y);
-            break;
+    //var siteLat = event.target.getAttribute("data-lat");
+    //var siteLon = event.target.getAttribute("data-lon");
 
 
-        case "facebook":
+    var siteLat = event.path[1].getAttribute("data-lat");
+    var siteLon = event.path[1].getAttribute("data-lon");
 
-            console.log("ID:", target);
-            var x = facebook.latitude;
-            var y = facebook.longitude;
-            codeLatLng(x, y);
-            break;
+    console.log("siteLat: ", siteLat);
+    console.log("siteLon: ", siteLon);
 
+    codeLatLng(siteLat, siteLon);
 
-        case "mission":
+    infoBox(event);
 
-            console.log("ID:", target);
-            var x = mission.latitude;
-            var y = mission.longitude;
-            codeLatLng(x, y);
-            break;
+}
 
-        case "minnesota":
+function infoBox(event) {                                               //  INFO BOX -- Address and Phone Number
 
-            console.log("ID:", target);
-            var x = minnesota.latitude;
-            var y = minnesota.longitude;
-            codeLatLng(x, y);
-            break;
+    var infoBox = $("#infoBox");
 
+    infoBox.show();
 
-        case "missionbay":
+    //var streetAddress = event.target.getAttribute("data-streetAddress");
+    //var phone = event.target.getAttribute("data-phone");
 
-            console.log("ID:", target);
-            var x = missionbay.latitude;
-            var y = missionbay.longitude;
-            codeLatLng(x, y);
-            break;
+    var streetAddress = event.path[1].getAttribute("data-streetAddress");
+    var phone = event.path[1].getAttribute("data-phone");
+    var hours1 = event.path[1].getAttribute("data-hours1");
+    var hours2 = event.path[1].getAttribute("data-hours2");
 
+    infoBoxText = streetAddress + "&nbsp;" + phone + "<br>";
 
-
-
-
+    if (hours1) {
+        infoBoxText += hours1 + "<br>";
     }
+
+    if (hours2) {
+        infoBoxText += hours2;
+    }
+
+    //infoBox.html(streetAddress + " &nbsp" + phone + "<br>" + hours1);
+    infoBox.html(infoBoxText);
+
 }
 
 
-var buttons = document.getElementsByTagName('input');
-for (i=0; i<locations.length; i++) {
-       buttons[i].onclick = mappit;
-}
 
-
-
-function codeLatLng(lat, lng) {
+function codeLatLng(lat, lng) {                                                 //  Philz SITE MAP
 //            var input = document.getElementById('latlng').value;
 //            var latlngStr = input.split(',', 2);
 
@@ -166,20 +130,30 @@ function codeLatLng(lat, lng) {
 
     geocoder.geocode({'latLng': latlng}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
-            if (results[1]) {
-                map.setZoom(14);
+
+            if (results[1]) {                                                           //  results[1] means object returned data
+                myMap.setZoom(14);
                 marker = new google.maps.Marker({
                     position: latlng,
-                    map: map
+                    map: myMap
                 });
 
-                infowindow.setContent(results[1].formatted_address);
-                infowindow.open(map, marker);
+
+                var stNum = results[0].address_components[0].short_name;                //  Drill down into results object
+                var streetName = results[0].address_components[1].short_name;
+
+
+                console.log("Geo-Code RESULTS: ", results);
+
+                //infowindow.setContent(results[1].formatted_address);
+                infowindow.setContent(stNum + " " + streetName);
+                infowindow.open(myMap, marker);
+
             } else {
                 alert('No results found');
             }
         } else {
-            alert('Geocoder failed due to: ' + status);
+            alert('Geocoder stumbled due to: ' + status + ' please try again!');
         }
     });
 }
