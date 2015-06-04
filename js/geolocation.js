@@ -21,7 +21,7 @@ function getCurrentPosition() {                                //  NAVIGATOR.GEO
         displayError("Your browser does not support geolocation.");
     }
 
-};
+}
 
 function gotLocation(currentPosition) {
 
@@ -111,34 +111,61 @@ function displayLi() {
             //var newIndex = parseInt(data.dataDistance);
             console.log("NEW INDEX: ", newIndex);
 
-            newLiArray[newIndex] = object;                        //  combine NEW Index value with OBJECT
+            newLiArray[newIndex] = object;                        //  combine NEW Index value with OBJECT -- ARRAY of OBJECTS
                                                                   //  CREATE newLiArray[]
 
 
     });
 
+    console.log("  ");
     console.log("newLiArray:", newLiArray);
     console.log("newLiArray.length:", newLiArray.length);
+    console.log("  ");
+
+
+    console.log("newLiArray[1]: ", newLiArray[1]);
+    console.log("newLiArray.indexOf(undefined):", newLiArray.indexOf('undefined'));
+    console.log("  ");
+
+
+    var xx = newLiArray.length;                     // This is a loop to remove splice() undefined ARRAY elements out
+    while (xx--) {
+
+        if (newLiArray[xx] == undefined) {
+            console.log("Hello");
+
+            newLiArray.splice(xx, 1);
+        }
+    }
+
+
+
+    console.log("  ");
+    console.log("2. newLiArray:", newLiArray);
+    console.log("2. newLiArray.length:", newLiArray.length);
+    console.log("  ");
+
+
 
 
     if (newLiArray.length == 0) {                                //  RED info Box if NO PHILZ within 21 miles
 
         var infoBox = $("#infoBox");
 
-        infoBox.show();
-        $("#infoBox").attr("class", "noSites");
+        infoBox.attr("class", "noSites");
         infoBox.html("Sorry no Philz within 20 miles");
+        infoBox.show();
 
     }
 
 
 
-
     $.each(newLiArray, function (index, object) {               //  SHOW array objects based on NEW INDEX VALUE
 
-        $('#siteLocations').append(object);                     //  APPEND <li> OBJECTS to the <ul>
+        $('#siteLocations').append(object);                     //  APPEND <li> OBJECTS to the <ul>  --  includes all the undefined ones
 
         console.log("newArray Objects: ", object);
+        console.log("newArray index: ", index);
         //console.log("NEW LENGTH ARRAY LENGTH:  ", newLiArray.length);
 
     });
@@ -147,12 +174,11 @@ function displayLi() {
 
 
 
+    //$finalLiArray = $('li');                            //  ONLY DISPLAY 5 SITES - DISPLAY NONE to the rest
 
-    $finalLiArray = $('li');                            //  ONLY DISPLAY 5 SITES - DISPLAY NONE to the rest
+    //console.log("finalLiArray:  ", $finalLiArray);
 
-    console.log("finalLiArray:  ", $finalLiArray);
-
-    $.each($finalLiArray, function (index, object) {
+    $.each(newLiArray, function (index, object) {
 
 
         if (index > 4) {                                //  ONLY DISPLAY 5 SITES - DISPLAY NONE to the rest
@@ -160,6 +186,8 @@ function displayLi() {
             $(this).css("display", "none");
         }
     });
+
+
 }
 
 

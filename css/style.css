@@ -109,13 +109,13 @@ li {
 
 .site-btn {
 
-    background-color: #d6af54;
-    border-color: #d6af54;
+    background-color: rgba(234, 74, 16, 0.80);
+    border-color:rgba(255, 99, 71, 0.80) ;
     width: 40%;
     right: 20%
     position: absolute;
     font: 18px normal 'Varela Round', Helvetica, serif;
-    color: black;
+    color: white;
     height: .4em;
     margin: 6px;
     padding-top: 4px;
@@ -125,7 +125,7 @@ li {
 
 .phinder-btn {
 
-    background-color: lawngreen !important;
+    background-color: rgba(124, 252, 0, 0.8) !important;
     border-color: lawngreen !important;
     height: 30px;
     margin-top: 9px;
